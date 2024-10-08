@@ -21,13 +21,29 @@ void interprete_line(std::string line) {
   if (words[0] == "O1") {
 	if (words[1][0] == 'V') {
 	  std::cout << variables.find(words[1])->second;
-	} else if (words[1] != "\\") {
-	  std::cout << words[1];
 	} else if (words[1] == "\\") {
 	  std::cout << "\n";
+	} else {
+	  std::cout << words[1];
 	}
-  } else if (words[0] == "A0") {
-	variables[words[1]] = stoi(words[2]);
+  }
+  else if (words[0] == "A0") {
+	if (words[2][0] == 'V') {
+	  variables[words[1]] = variables.find(words[2])->second;
+	} else {
+	  variables[words[1]] = stoi(words[2]);
+	}
+  }
+  else if (words[0][0] == 'M') {
+	if (words[0][1] == '1') {
+	  int added = 0;
+	  if (words[1][0] == 'V') {
+		added = variables.find(words[2])->second;
+	  } else {
+		added = stoi(words[2]);
+	  }
+	  variables[words[1]] = variables[words[1]] + added;
+	}
   }
 }
 
@@ -53,7 +69,7 @@ std::string uncomment(std::string line) {
 }
 
 int main() {
-  std::string filename = "1.dl";
+  std::string filename = "final.dl";
   std::ifstream file(filename);
 
   if (!file.is_open()) {

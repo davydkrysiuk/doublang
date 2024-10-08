@@ -8,7 +8,7 @@
 int line_counter = 0;
 int line_current = 0;
 std::unordered_map<int, std::string> lines;
-std::unordered_map<std::string, int> variables;
+std::unordered_map<std::string, float> variables;
 
 void interprete_line(std::string line) {
   std::vector<std::string> words;
@@ -35,15 +35,11 @@ void interprete_line(std::string line) {
 	}
   }
   else if (words[0][0] == 'M') {
-	if (words[0][1] == '1') {
-	  int added = 0;
-	  if (words[1][0] == 'V') {
-		added = variables.find(words[2])->second;
-	  } else {
-		added = stoi(words[2]);
-	  }
-	  variables[words[1]] = variables[words[1]] + added;
-	}
+	int given_value = (words[1][0] == 'V') ? variables.find(words[2])->second : stoi(words[2]);
+	if (words[0][1] == '1') variables[words[1]] += given_value;
+	if (words[0][1] == '2') variables[words[1]] -= given_value;
+	if (words[0][1] == '3') variables[words[1]] *= given_value;
+	if (words[0][1] == '4') variables[words[1]] /= given_value;
   }
 }
 
@@ -79,6 +75,7 @@ int main() {
   
   std::string line;
   while (std::getline(file, line)) {
+	if (line == "") continue;
 	std::string prepared = uncomment(line);
 	load_line(prepared);
 	line_counter++;
